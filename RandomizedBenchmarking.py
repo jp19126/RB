@@ -109,14 +109,9 @@ def get_para(U):
     if thetaq==0 or gammaq==0:
         phiiq = 0
     else:
-        phiiq1 = -np.arcsin(np.real(temp3)/np.sin(gammaq/2)/np.sin(thetaq))
-        phiiq2 = np.pi+np.arcsin(np.real(temp3)/np.sin(gammaq/2)/np.sin(thetaq))
-        UII1 = UI(gammaq,thetaq,phiiq1)
-        UII2 = UI(gammaq,thetaq,phiiq2)
-        if np.allclose(UII1, U):
-            phiiq = phiiq1
-        else:
-            phiiq = phiiq2
+        phiiq = -np.arcsin(np.real(temp3)/np.sin(gammaq/2)/np.sin(thetaq))
+        if np.allclose(UI(gammaq,thetaq,phiiq), U) == False:
+            phiiq = np.pi - phiiq
     Miu = (2*np.pi-2*gammaq)/(2*np.pi)
     time = 2*np.pi/v1*np.sqrt(1-Miu**2)
     eta = -2*np.pi*Miu/time
