@@ -2,10 +2,10 @@
 This repository collects the python programmes realizing the Clifford-based Randomized Benchmarking technique in Quantum Control problems, determining the error performance of a given quantum gate.
 
 ## Version
-v1. (Historical version)Rewrote the generation rule of random unitary gates from the Clifford group. No other changes were applied, which means they remained the same as the original MATLAB programme.
+**v1**. (Historical version)Rewrote the generation rule of random unitary gates from the Clifford group. No other changes were applied, which means they remained the same as the original MATLAB programme.
 
-v2. The programme is now able to compute the fidelity after applying m Clifford group gates to the initial state. Currently, we only considered a single iteration. In the next version, the same process will be repeated to compute the average fidelity. Meanwhile, we will modify m and do curve fitting based on that.  
-v2.1 Function get_para simplified.
+**v2**. The programme is now able to compute the fidelity after applying m Clifford group gates to the initial state. Currently, we only considered a single iteration. In the next version, the same process will be repeated to compute the average fidelity. Meanwhile, we will modify m and do curve fitting based on that.     
+**v2.1**. Function get_para simplified.
 
 ## References
 [1] Barends, R., Kelly, J., Megrant, A., Veitia, A., Sank, D., Jeffrey, E., White, T.C., Mutus, J., Fowler, A.G., Campbell, B. and Chen, Y., 2014. Superconducting quantum circuits at the surface code threshold for fault tolerance. Nature, 508(7497), p.500.
