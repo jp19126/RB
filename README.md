@@ -4,7 +4,7 @@ This repository collects the python programmes realizing the Clifford-based Rand
 ## Version
 v1. (Historical version)Rewrote the generation rule of random unitary gates from the Clifford group. No other changes were applied, which means they remained the same as the original MATLAB programme.
 
-v2. The programme is now able to compute the fidelity after applying m Clifford group gates to the initial state. Currently, we only considered a single iteration. In the next version, the same process will be repeated to compute the average fidelity. Meanwhile, we will modify m and do curve fitting based on that.
+v2. The programme is now able to compute the fidelity after applying m Clifford group gates to the initial state. Currently, we only considered a single iteration. In the next version, the same process will be repeated to compute the average fidelity. Meanwhile, we will modify m and do curve fitting based on that.  
 v2.1 Function get_para simplified.
 
 ## References
