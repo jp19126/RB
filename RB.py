@@ -8,6 +8,7 @@ import numpy as np
 #from qutip import *
 import matplotlib.pyplot as plt
 from scipy.linalg import expm
+import time as ti
 
 
 # In[2]:
@@ -103,13 +104,21 @@ def get_para(U):
         return UII
     gammaq = np.real(2*np.arccos((temp1+temp9)/2))
     if gammaq == 0:
-        thetaq =0
+        thetaq = 0
     else:
         thetaq = np.real(np.arccos(((temp1-temp9)/2)/((0+1j)*np.sin(gammaq/2))))
-    if thetaq==0 or gammaq==0:
+    if thetaq<1e-4 or gammaq<1e-4:
         phiiq = 0
     else:
-        phiiq = -np.arcsin(np.real(temp3)/np.sin(gammaq/2)/np.sin(thetaq))
+        temp3_real = np.real(temp3)
+        if np.allclose(temp3_real, 0):
+            temp3_real = 0
+        arg = temp3_real/np.sin(gammaq/2)/np.sin(thetaq)
+        if arg>1 and np.allclose(arg, 1):
+            arg = 1
+        elif arg<-1 and np.allclose(arg, -1):
+            arg = -1
+        phiiq = -np.arcsin(arg)
         if np.allclose(UI(gammaq,thetaq,phiiq), U) == False:
             phiiq = np.pi - phiiq
     Miu = (2*np.pi-2*gammaq)/(2*np.pi)
@@ -143,7 +152,7 @@ kappa0 = 2*np.pi*4/1000; # Cavity decay
 kappa1 = 2*np.pi*4/1000; # Effective atom decay 16ns
 kappa2 = 0;
 # Area of pulse
-v1=80.7954
+v1 = 80.7954
 
 
 # In[6]:
@@ -151,81 +160,92 @@ v1=80.7954
 
 # Initial states
 intialstate = zerostate
-#intialstate =  np.multiply(1/np.sqrt(2), np.add(zerostate, onestate))
 initialdm = np.matmul(intialstate, np.matrix(intialstate).getH())
-dm1 = initialdm
 finalatomstate1 = zerostate
-fidm1 = np.matmul(finalatomstate1, np.matrix(finalatomstate1).H)
-finalatomstate2 = estate
-fidm2 = np.matmul(finalatomstate2, np.matrix(finalatomstate2).H)
-finalatomstate3 = onestate
-fidm3 = np.matmul(finalatomstate3, np.matrix(finalatomstate3).H)
+fidm = np.matmul(finalatomstate1, np.matrix(finalatomstate1).H)
 
-# Max Rabi frequency
 # Dots drawn per period每一个周期画的点数
 dotsPerPeriod = 1000;
 numberOfPeriod = 1;
-# Define time and setp
-#U = np.identity(3)
-# Define time and setp
-#timestep = tao/dotsPerPeriod;  # Draw dotsPerPeriod dots per period
-#time = (m+1)*numberOfPeriod*dotsPerPeriod;  # Draw numberOfPeriod periods
 
 
 # In[7]:
 
 
 m = 10
+K = 40
 Clifford = CliffordGate()
-U_final = np.identity(3)
 
 
 # In[8]:
 
 
-for k in range(1, m+2, 1):
-    if k == m+1:
-        # Deal with the last gate - the recover gate
-        U_recover = np.matrix(U_final).H
-        gamma, theta, phi, time, eta = get_para(U_recover)
-        #print(k, ":", gamma, theta, phi, time, eta, "\n")
-    else:   
-        Clifford.randtarget()
-        U = Clifford.target
-        gamma = Clifford.gamma
-        theta = Clifford.theta
-        phi = Clifford.phi
-        eta = Clifford.eta
-        time = Clifford.time
-        U_final = np.matmul(U, U_final)
-        #print(k, ":", gamma, theta, phi, time, eta, "\n", U_final, "\n")
-    timestep = time/dotsPerPeriod
-    for n in range(1, dotsPerPeriod+1, 1):        
-        t = (n-1)*timestep   
-        PHI = eta*t
-        Omega = v1*np.exp((0-1j)*PHI)
-        OmegaP = Omega*np.sin(theta/2)
-        OmegaS = Omega*np.cos(theta/2)*np.exp((0+1j)*phi)
-        Hamiltonian1 = (OmegaP*A0e+np.conj(OmegaP)*Ae0+OmegaS*A1e+np.conj(OmegaS)*Ae1)/2
-        dt = timestep
-        #U = np.matmul(expm((0-1j)*Hamiltonian1*dt), U)
-        Psi = np.matmul(expm((0-1j)*Hamiltonian1*dt), Psi)
-        k1 = solve_master(Hamiltonian1,dm1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-        k2 = solve_master(Hamiltonian1,dm1+0.5*timestep*k1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-        k3 = solve_master(Hamiltonian1,dm1+0.5*timestep*k2,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-        k4 = solve_master(Hamiltonian1,dm1+timestep*k3,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-        dm1 = dm1+(timestep/6)*(k1+2*k2+2*k3+k4)
-        dm1 = 0.5*(dm1+np.matrix(dm1).H)
-        dm1 = dm1/(np.trace(dm1))
-        rho = dm1
-        
-fidelity = np.real(np.trace(np.matmul(rho, fidm1)))
+fidelity = np.zeros(K)
 
 
 # In[9]:
 
 
+start = ti.time()
+for k in range (1, K+1, 1):
+    dm1 = initialdm
+    U_final = np.identity(3)
+    for i in range(1, m+2, 1):
+        if i == m+1:
+            # Deal with the last gate - the recover gate
+            U_recover = np.matrix(U_final).H
+            gamma, theta, phi, time, eta = get_para(U_recover)
+        else:   
+            Clifford.randtarget()
+            U = Clifford.target
+            gamma = Clifford.gamma
+            theta = Clifford.theta
+            phi = Clifford.phi
+            eta = Clifford.eta
+            time = Clifford.time
+            U_final = np.matmul(U, U_final)
+        timestep = time/dotsPerPeriod
+        for n in range(1, dotsPerPeriod+1, 1):        
+            t = (n-1)*timestep   
+            PHI = eta*t
+            Omega = v1*np.exp((0-1j)*PHI)
+            OmegaP = Omega*np.sin(theta/2)
+            OmegaS = Omega*np.cos(theta/2)*np.exp((0+1j)*phi)
+            Hamiltonian1 = (OmegaP*A0e+np.conj(OmegaP)*Ae0+OmegaS*A1e+np.conj(OmegaS)*Ae1)/2
+            dt = timestep
+            #U = np.matmul(expm((0-1j)*Hamiltonian1*dt), U)
+            Psi = np.matmul(expm((0-1j)*Hamiltonian1*dt), Psi)
+            k1 = solve_master(Hamiltonian1,dm1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+            k2 = solve_master(Hamiltonian1,dm1+0.5*timestep*k1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+            k3 = solve_master(Hamiltonian1,dm1+0.5*timestep*k2,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+            k4 = solve_master(Hamiltonian1,dm1+timestep*k3,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+            dm1 = dm1+(timestep/6)*(k1+2*k2+2*k3+k4)
+            dm1 = 0.5*(dm1+np.matrix(dm1).H)
+            rho = dm1/(np.trace(dm1))
+
+    fidelity[k-1] = np.real(np.trace(np.matmul(rho, fidm)))
+    
+    
+end = ti.time()
+
+
+# In[10]:
+
+
+fid_avg = np.mean(fidelity)
 fidelity
+
+
+# In[11]:
+
+
+end - start
+
+
+# In[13]:
+
+
+fid_avg
 
 
 # In[ ]:
