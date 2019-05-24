@@ -7,6 +7,8 @@ This repository collects the python programmes realizing the Clifford-based Rand
 **v2**. The programme is now able to compute the fidelity after applying m Clifford group gates to the initial state. Currently, we only considered a single iteration. In the next version, the same process will be repeated to compute the average fidelity. Meanwhile, we will modify m and do curve fitting based on that.     
 **v2.1**. Function _get_para_ simplified.
 
+**v3**. Iterate K times for a fixed value of m, sum individual fidelity values up and compute the average fidelity. Currently in the notebook: m = 10, K = 50. Total runtime: 532.96s ~ 8.88min
+
 ## References
 [1] Barends, R., Kelly, J., Megrant, A., Veitia, A., Sank, D., Jeffrey, E., White, T.C., Mutus, J., Fowler, A.G., Campbell, B. and Chen, Y., 2014. Superconducting quantum circuits at the surface code threshold for fault tolerance. Nature, 508(7497), p.500.  
 [2] Knill, E., Leibfried, D., Reichle, R., Britton, J., Blakestad, R.B., Jost, J.D., Langer, C., Ozeri, R., Seidelin, S. and Wineland, D.J., 2008. Randomized benchmarking of quantum gates. Physical Review A, 77(1), p.012307.  
