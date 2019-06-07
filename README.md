@@ -16,7 +16,6 @@ Function _get_para_ simplified.
 Iterate K times for a fixed value of m, sum individual fidelity values up and compute the average fidelity. Currently in the notebook: m = 10, K = 50. Total runtime: 532.96s ~ 8.88min
 <br />
 <br />
-<br />
 **v4**.  
 1. Rewrote the part where Clifford gates were generated. 
 2. Bug fixed: fixed the bug where the function _get_para_ did not work properly. That was because when _gamma_, _theta_ and _phi_ all equal to zero the time calculation part would encounter "divided by zero" error. 
