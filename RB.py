@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# In[ ]:
+
+
+'''
+-0.701184236509162 + 0.709973051882869j,      -0.0325875156346839 - 0.0328255976389318j,    0.0325875156346838 - 0.0328255976389317j
+0.000291958531064516 - 0.0462534409077854j,   0.00113618408451785 - 0.00807218387098761j,   0.998863815915481 - 0.00807218387098759j
+0.000291958531064545 - 0.0462534409077857j,   -0.998863815915482 - 0.00807218387098761j,    0.00113618408451833 - 0.00807218387098760j
+'''
+
+
 # In[1]:
 
 
@@ -12,6 +22,35 @@ import time as ti
 
 
 # In[2]:
+
+
+Cliffords = [(1.3e-5, 0, 0), 
+             (np.pi, np.pi/2, 0),
+             (np.pi, np.pi/2, np.pi/2), 
+             (np.pi, 0, 0),
+             (np.pi, np.pi*3/4, 0),
+             (np.pi, np.pi/4, 0),
+             (np.pi, np.pi/4, np.pi/2),
+             (np.pi, np.pi*3/4, np.pi/2), 
+             (np.pi, np.pi/2, np.pi/4),
+             (np.pi, np.pi/2, np.pi*3/4),
+             (np.pi/2, np.pi/2, 0),
+             (np.pi/2, np.pi/2, np.pi),
+             (np.pi/2, np.pi/2, np.pi/2),
+             (np.pi/2, np.pi/2, np.pi*3/2),
+             (np.pi/2, 0, 0),
+             (np.pi/2, np.pi, 0),
+             (np.pi*2/3, np.arccos(-1/np.sqrt(3)), np.pi/4),
+             (np.pi*2/3, np.arccos(1/np.sqrt(3)), -np.pi/4),
+             (np.pi*2/3, np.arccos(1/np.sqrt(3)), np.pi*3/4),
+             (np.pi*2/3, np.arccos(-1/np.sqrt(3)), np.pi*5/4),
+             (np.pi*2/3, np.arccos(1/np.sqrt(3)), np.pi/4),
+             (np.pi*2/3, np.arccos(-1/np.sqrt(3)), np.pi*3/4),
+             (np.pi*2/3, np.arccos(-1/np.sqrt(3)), -np.pi/4), 
+             (np.pi*2/3, np.arccos(1/np.sqrt(3)), np.pi*5/4)]
+
+
+# In[3]:
 
 
 def solve_master(Hami,dm,decoop1,decoop2,decoop3,rate1,rate2,rate3):
@@ -29,67 +68,39 @@ def solve_master(Hami,dm,decoop1,decoop2,decoop3,rate1,rate2,rate3):
     return out
 
 
-# In[3]:
-
-
-class CliffordGate:
-    def __init__(self):
-        self.angles = [ (1.3e-5, 0, 0), 
-                        (np.pi, np.pi/2, 0),
-                        (np.pi, np.pi/2, np.pi/2), 
-                        (np.pi, 0, 0),
-                        (np.pi, np.pi*3/4, 0),
-                        (np.pi, np.pi/4, 0),
-                        (np.pi, np.pi/4, np.pi/2),
-                        (np.pi, np.pi*3/4, np.pi/2), 
-                        (np.pi, np.pi/2, np.pi/4),
-                        (np.pi, np.pi/2, np.pi*3/4),
-                        (np.pi/2, np.pi/2, 0),
-                        (np.pi/2, np.pi/2, np.pi),
-                        (np.pi/2, np.pi/2, np.pi/2),
-                        (np.pi/2, np.pi/2, np.pi*3/2),
-                        (np.pi/2, 0, 0),
-                        (np.pi/2, np.pi, 0),
-                        (np.pi*2/3, np.arccos(-1/np.sqrt(3)), np.pi/4),
-                        (np.pi*2/3, np.arccos(1/np.sqrt(3)), -np.pi/4),
-                        (np.pi*2/3, np.arccos(1/np.sqrt(3)), np.pi*3/4),
-                        (np.pi*2/3, np.arccos(-1/np.sqrt(3)), np.pi*5/4),
-                        (np.pi*2/3, np.arccos(1/np.sqrt(3)), np.pi/4),
-                        (np.pi*2/3, np.arccos(-1/np.sqrt(3)), np.pi*3/4),
-                        (np.pi*2/3, np.arccos(-1/np.sqrt(3)), -np.pi/4), 
-                        (np.pi*2/3, np.arccos(1/np.sqrt(3)), np.pi*5/4)   ]
-    
-    def getgate_angle(self, gamma, theta, phi):
-        self.target = np.array([[np.cos(gamma/2)+(0+1j)*np.sin(gamma/2)*np.cos(theta), 0, (0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0-1j)*phi)],
-                                [0, 1, 0],
-                                [(0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0+1j)*phi), 0, np.cos(gamma/2)-(0+1j)*np.sin(gamma/2)*np.cos(theta)]])  
-        
-    def getgate(self, n):
-        self.gamma = self.angles[n-1][0]
-        self.theta = self.angles[n-1][1]
-        self.phi = self.angles[n-1][2]
-        self.target = np.array([[np.cos(self.gamma/2)+(0+1j)*np.sin(self.gamma/2)*np.cos(self.theta), 0, (0-1j)*np.sin(self.gamma/2)*np.sin(self.theta)*np.exp((0-1j)*self.phi)],
-                                [0, 1, 0],
-                                [(0-1j)*np.sin(self.gamma/2)*np.sin(self.theta)*np.exp((0+1j)*self.phi), 0, np.cos(self.gamma/2)-(0+1j)*np.sin(self.gamma/2)*np.cos(self.theta)]])  
-    
-    def randtarget(self):
-        # Generalize a random integer in the range of 1 to 24
-        randnum = np.random.randint(low=1, high=24) # high will be 24 in the later version
-        # Pick out the corresponding value of angles
-        self.gamma = self.angles[randnum-1][0]
-        self.theta = self.angles[randnum-1][1]
-        self.phi = self.angles[randnum-1][2]
-        Miu = (2*np.pi-2*self.gamma)/(2*np.pi)
-        self.time = 2*np.pi/v1*np.sqrt(1-Miu**2)+10e-6
-        self.eta=-2*np.pi*Miu/self.time
-        # Utarget1=[cos(ThetaA1) 0 sin(ThetaA1)*exp(-1i*Fei1);0 1 0;sin(ThetaA1)*exp(1i*Fei1) 0 -cos(ThetaA1)];
-        # Factor  np.exp((0-1j)*(self.gamma/2))* omitted
-        self.target = np.array([[np.cos(self.gamma/2)+(0+1j)*np.sin(self.gamma/2)*np.cos(self.theta), 0, (0-1j)*np.sin(self.gamma/2)*np.sin(self.theta)*np.exp((0-1j)*self.phi)],
-                                [0, 1, 0],
-                                [(0-1j)*np.sin(self.gamma/2)*np.sin(self.theta)*np.exp((0+1j)*self.phi), 0, np.cos(self.gamma/2)-(0+1j)*np.sin(self.gamma/2)*np.cos(self.theta)]])  
-
-
 # In[4]:
+
+
+def getgate(gamma, theta, phi):
+    target = np.array([[np.cos(gamma/2)+(0+1j)*np.sin(gamma/2)*np.cos(theta), 0, (0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0-1j)*phi)],
+                            [0, 1, 0],
+                            [(0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0+1j)*phi), 0, np.cos(gamma/2)-(0+1j)*np.sin(gamma/2)*np.cos(theta)]])  
+    return target
+
+
+# In[5]:
+
+
+def randClifford():
+    randnum = np.random.randint(low=1, high=25) # Generalize a random integer in the range of 1 to 24 
+    # Pick out the corresponding value of angles
+    gamma = Cliffords[randnum-1][0]
+    theta = Cliffords[randnum-1][1]
+    phi = Cliffords[randnum-1][2]
+    Miu = (2*np.pi-2*gamma)/(2*np.pi)
+    time = 2*np.pi/v1*np.sqrt(1-Miu**2)+10e-6
+    eta = -2*np.pi*Miu/time
+    # Factor  np.exp((0-1j)*(gamma/2))* omitted
+    target = np.array([[np.cos(gamma/2)+(0+1j)*np.sin(gamma/2)*np.cos(theta), 0, (0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0-1j)*phi)],
+                       [0, 1, 0],
+                       [(0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0+1j)*phi), 0, np.cos(gamma/2)-(0+1j)*np.sin(gamma/2)*np.cos(theta)]]) 
+    
+    time = 2*np.pi/v1*np.sqrt(1-Miu**2)+10e-6
+    eta = -2*np.pi*Miu/time
+    return target, gamma, theta, phi, time, eta
+
+
+# In[6]:
 
 
 def get_para(U):
@@ -103,10 +114,12 @@ def get_para(U):
                        [(0-1j)*np.sin(gamma/2)*np.sin(theta)*np.exp((0+1j)*phi), 0, np.cos(gamma/2)-(0+1j)*np.sin(gamma/2)*np.cos(theta)]])  
         return UII
     gammaq = np.real(2*np.arccos((temp1+temp9)/2))
+#     if np.allclose(gammaq, 2*np.pi):
+#         gammaq = 0
     if gammaq == 0:
         thetaq = 0
     else:
-        thetaq = np.real(np.arccos(((temp1-temp9)/2)/((0+1j)*np.sin(gammaq/2))))
+        thetaq = np.real(np.arccos(((temp1-temp9)/2)/((0+1j)*np.sin(gammaq/2))))   
     if thetaq<1e-4 or gammaq<1e-4:
         phiiq = 0
     else:
@@ -122,12 +135,12 @@ def get_para(U):
         if np.allclose(UI(gammaq,thetaq,phiiq), U) == False:
             phiiq = np.pi - phiiq
     Miu = (2*np.pi-2*gammaq)/(2*np.pi)
-    time = 2*np.pi/v1*np.sqrt(1-Miu**2)
+    time = 2*np.pi/v1*np.sqrt(1-Miu**2)+10e-6
     eta = -2*np.pi*Miu/time
     return gammaq, thetaq, phiiq, time, eta
 
 
-# In[5]:
+# In[7]:
 
 
 identy = np.identity(3)
@@ -155,7 +168,7 @@ kappa2 = 0;
 v1 = 80.7954
 
 
-# In[6]:
+# In[8]:
 
 
 # Initial states
@@ -169,80 +182,67 @@ dotsPerPeriod = 1000;
 numberOfPeriod = 1;
 
 
-# In[7]:
+# In[33]:
 
 
-m = 10
+# Maximum number of Clifford gates
+M = np.zeros(26, dtype = int)
+for n in range(1, 27):
+    M[n-1] = 4*(n-1)+1
+# Number of iteration to get the average fidelity
 K = 40
-Clifford = CliffordGate()
-
-
-# In[8]:
-
-
-fidelity = np.zeros(K)
-
-
-# In[9]:
-
-
-start = ti.time()
-for k in range (1, K+1, 1):
-    dm1 = initialdm
-    U_final = np.identity(3)
-    for i in range(1, m+2, 1):
-        if i == m+1:
-            # Deal with the last gate - the recover gate
-            U_recover = np.matrix(U_final).H
-            gamma, theta, phi, time, eta = get_para(U_recover)
-        else:   
-            Clifford.randtarget()
-            U = Clifford.target
-            gamma = Clifford.gamma
-            theta = Clifford.theta
-            phi = Clifford.phi
-            eta = Clifford.eta
-            time = Clifford.time
-            U_final = np.matmul(U, U_final)
-        timestep = time/dotsPerPeriod
-        for n in range(1, dotsPerPeriod+1, 1):        
-            t = (n-1)*timestep   
-            PHI = eta*t
-            Omega = v1*np.exp((0-1j)*PHI)
-            OmegaP = Omega*np.sin(theta/2)
-            OmegaS = Omega*np.cos(theta/2)*np.exp((0+1j)*phi)
-            Hamiltonian1 = (OmegaP*A0e+np.conj(OmegaP)*Ae0+OmegaS*A1e+np.conj(OmegaS)*Ae1)/2
-            dt = timestep
-            #U = np.matmul(expm((0-1j)*Hamiltonian1*dt), U)
-            Psi = np.matmul(expm((0-1j)*Hamiltonian1*dt), Psi)
-            k1 = solve_master(Hamiltonian1,dm1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-            k2 = solve_master(Hamiltonian1,dm1+0.5*timestep*k1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-            k3 = solve_master(Hamiltonian1,dm1+0.5*timestep*k2,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-            k4 = solve_master(Hamiltonian1,dm1+timestep*k3,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
-            dm1 = dm1+(timestep/6)*(k1+2*k2+2*k3+k4)
-            dm1 = 0.5*(dm1+np.matrix(dm1).H)
-            rho = dm1/(np.trace(dm1))
-
-    fidelity[k-1] = np.real(np.trace(np.matmul(rho, fidm)))
-    
-    
-end = ti.time()
 
 
 # In[10]:
 
 
-fid_avg = np.mean(fidelity)
-fidelity
+fidelity = np.zeros(K)
+fid_avg = np.zeros(len(M))
 
 
-# In[11]:
+# In[24]:
 
 
-end - start
+start = ti.time()
+
+for m in M:
+    fidelity = np.zeros(K)
+    for k in range (1, K+1, 1):
+        dm1 = initialdm
+        U_final = np.identity(3)
+        for i in range(1, m+2, 1):
+            if i == m+1:
+                # Deal with the last gate - the recover gate
+                U_recover = np.matrix(U_final).H
+                gamma, theta, phi, time, eta = get_para(U_recover)
+            else:   
+                U, gamma, theta, phi, time, eta = randClifford()
+                U_final = np.matmul(U, U_final)
+            timestep = time/dotsPerPeriod
+            for n in range(1, dotsPerPeriod+1, 1):        
+                t = (n-1)*timestep   
+                PHI = eta*t
+                Omega = v1*np.exp((0-1j)*PHI)
+                OmegaP = Omega*np.sin(theta/2)
+                OmegaS = Omega*np.cos(theta/2)*np.exp((0+1j)*phi)
+                Hamiltonian1 = (OmegaP*A0e+np.conj(OmegaP)*Ae0+OmegaS*A1e+np.conj(OmegaS)*Ae1)/2
+                dt = timestep
+                # U = np.matmul(expm((0-1j)*Hamiltonian1*dt), U)
+                # Psi = np.matmul(expm((0-1j)*Hamiltonian1*dt), Psi)
+                k1 = solve_master(Hamiltonian1,dm1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+                k2 = solve_master(Hamiltonian1,dm1+0.5*timestep*k1,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+                k3 = solve_master(Hamiltonian1,dm1+0.5*timestep*k2,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+                k4 = solve_master(Hamiltonian1,dm1+timestep*k3,Gamma0,Gamma1,Gamma2,kappa0,kappa1,kappa2)
+                dm1 = dm1+(timestep/6)*(k1+2*k2+2*k3+k4)
+                dm1 = 0.5*(dm1+np.matrix(dm1).H)
+                rho = dm1/(np.trace(dm1))
+        fidelity[k-1] = np.real(np.trace(np.matmul(rho, fidm)))
+    fid_avg[int((m-1)/4)] = np.mean(fidelity)
+    
+end = ti.time()
 
 
-# In[13]:
+# In[ ]:
 
 
 fid_avg
