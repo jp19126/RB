@@ -22,6 +22,8 @@ Iterate K times for a fixed value of m, sum individual fidelity values up and co
 3.Added the iteration on m.  
 **v4.1**.  
 Minor bug fixed in function _get_para_.
+**v4.2**.  
+Added the result of running. m took the values in the list [1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61, 65, 69, 73, 77, 81, 85, 89, 93, 97, 101]
 
 ## References
 [1] Barends, R., Kelly, J., Megrant, A., Veitia, A., Sank, D., Jeffrey, E., White, T.C., Mutus, J., Fowler, A.G., Campbell, B. and Chen, Y., 2014. Superconducting quantum circuits at the surface code threshold for fault tolerance. Nature, 508(7497), p.500.  
