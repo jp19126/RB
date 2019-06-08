@@ -19,7 +19,9 @@ Iterate K times for a fixed value of m, sum individual fidelity values up and co
 **v4**.  
 1. Rewrote the part where Clifford gates were generated. 
 2. Bug fixed: fixed the bug where the function _get_para_ did not work properly. That was because when _gamma_, _theta_ and _phi_ all equal to zero the time calculation part would encounter "divided by zero" error. 
-3. Added the iteration on m.
+3. Added the iteration on m. 
+**v4.1**.  
+Minor bug fixed in function _get_para_.
 
 ## References
 [1] Barends, R., Kelly, J., Megrant, A., Veitia, A., Sank, D., Jeffrey, E., White, T.C., Mutus, J., Fowler, A.G., Campbell, B. and Chen, Y., 2014. Superconducting quantum circuits at the surface code threshold for fault tolerance. Nature, 508(7497), p.500.  
