@@ -127,9 +127,9 @@ def get_para(U):
         if np.allclose(temp3_real, 0):
             temp3_real = 0
         arg = temp3_real/np.sin(gammaq/2)/np.sin(thetaq)
-        if arg>1 and np.allclose(arg, 1):
+        if arg>1 and np.allclose(arg, 1， atol=10e-4):
             arg = 1
-        elif arg<-1 and np.allclose(arg, -1):
+        elif arg<-1 and np.allclose(arg, -1, atol=10e-4):
             arg = -1
         phiiq = -np.arcsin(arg)
         if np.allclose(UI(gammaq,thetaq,phiiq), U) == False:
